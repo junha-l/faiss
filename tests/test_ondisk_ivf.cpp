@@ -10,7 +10,7 @@
 #include <random>
 
 #include <unistd.h>
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <unordered_map>
 #include <pthread.h>

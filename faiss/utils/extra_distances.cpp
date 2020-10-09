@@ -11,7 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 
 #include <faiss/utils/utils.h>
@@ -158,7 +158,7 @@ void knn_extra_metrics_template (
     size_t k = res->k;
     size_t d = vd.d;
     size_t check_period = InterruptCallback::get_period_hint (ny * d);
-    check_period *= omp_get_max_threads();
+    check_period *= GetMaxThreads();
 
     for (size_t i0 = 0; i0 < nx; i0 += check_period) {
         size_t i1 = std::min(i0 + check_period, nx);

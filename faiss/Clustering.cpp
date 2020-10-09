@@ -15,7 +15,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <faiss/utils/utils.h>
 #include <faiss/utils/random.h>
@@ -151,8 +151,8 @@ void compute_centroids (size_t d, size_t k, size_t n,
 
 #pragma omp parallel
     {
-        int nt = omp_get_num_threads();
-        int rank = omp_get_thread_num();
+        int nt = GetNumThreads();
+        int rank = GetThreadNum();
 
         // this thread is taking care of centroids c0:c1
         size_t c0 = (k * rank) / nt;

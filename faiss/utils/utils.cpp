@@ -25,7 +25,7 @@
 #include <unistd.h>
 #endif // !_MSC_VER
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <algorithm>
 #include <vector>
@@ -513,7 +513,7 @@ void fvec_argsort_parallel (size_t n, const float *vals,
     // 2 result tables, during merging, flip between them
     size_t *permB = perm2, *permA = perm;
 
-    int nt = omp_get_max_threads();
+    int nt = GetMaxThreads();
     { // prepare correct permutation so that the result ends in perm
       // at final iteration
         int nseg = nt;
@@ -539,8 +539,8 @@ void fvec_argsort_parallel (size_t n, const float *vals,
         std::sort (permA + seg.i0, permA + seg.i1, comp);
         segs[t] = seg;
     }
-    int prev_nested = omp_get_nested();
-    omp_set_nested(1);
+    int prev_nested = GetNested();
+    SetNested(1);
 
     int nseg = nt;
     while (nseg > 1) {
@@ -567,7 +567,7 @@ void fvec_argsort_parallel (size_t n, const float *vals,
         std::swap (permA, permB);
     }
     assert (permA == perm);
-    omp_set_nested(prev_nested);
+    SetNested(prev_nested);
     delete [] perm2;
 }
 
@@ -644,43 +644,43 @@ uint64_t hash_bytes (const uint8_t *bytes, int64_t n) {
 }
 
 
-bool check_openmp() {
-    omp_set_num_threads(10);
+// bool check_openmp() {
+//     SetNumThreads(10);
 
-    if (omp_get_max_threads() != 10) {
-        return false;
-    }
+//     if (GetMaxThreads() != 10) {
+//         return false;
+//     }
 
-    std::vector<int> nt_per_thread(10);
-    size_t sum = 0;
-    bool in_parallel = true;
-#pragma omp parallel reduction(+: sum)
-    {
-        if (!omp_in_parallel()) {
-            in_parallel = false;
-        }
+//     std::vector<int> nt_per_thread(10);
+//     size_t sum = 0;
+//     bool in_parallel = true;
+// #pragma omp parallel reduction(+: sum)
+//     {
+//         if (!omp_in_parallel()) {
+//             in_parallel = false;
+//         }
 
-        int nt = omp_get_num_threads();
-        int rank = omp_get_thread_num();
+//         int nt = GetNumThreads();
+//         int rank = GetThreadNum();
 
-        nt_per_thread[rank] = nt;
-#pragma omp for
-        for(int i = 0; i < 1000 * 1000 * 10; i++) {
-            sum += i;
-        }
-    }
+//         nt_per_thread[rank] = nt;
+// #pragma omp for
+//         for(int i = 0; i < 1000 * 1000 * 10; i++) {
+//             sum += i;
+//         }
+//     }
 
-    if (!in_parallel) {
-        return false;
-    }
-    if (nt_per_thread[0] != 10) {
-        return false;
-    }
-    if (sum == 0) {
-        return false;
-    }
+//     if (!in_parallel) {
+//         return false;
+//     }
+//     if (nt_per_thread[0] != 10) {
+//         return false;
+//     }
+//     if (sum == 0) {
+//         return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 } // namespace faiss

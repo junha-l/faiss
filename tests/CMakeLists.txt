@@ -6,19 +6,19 @@
 
 add_executable(faiss_test
   test_binary_flat.cpp
-  test_dealloc_invlists.cpp
-  test_ivfpq_codec.cpp
-  test_ivfpq_indexing.cpp
-  test_lowlevel_ivf.cpp
-  test_merge.cpp
-  test_omp_threads.cpp
-  test_ondisk_ivf.cpp
-  test_pairs_decoding.cpp
-  test_params_override.cpp
-  test_pq_encoding.cpp
-  test_sliding_ivf.cpp
-  test_threaded_index.cpp
-  test_transfer_invlists.cpp
+  # test_dealloc_invlists.cpp
+  # test_ivfpq_codec.cpp
+  # test_ivfpq_indexing.cpp
+  # test_lowlevel_ivf.cpp
+  # test_merge.cpp
+  # test_omp_threads.cpp
+  # test_ondisk_ivf.cpp
+  # test_pairs_decoding.cpp
+  # test_params_override.cpp
+  # test_pq_encoding.cpp
+  # test_sliding_ivf.cpp
+  # test_threaded_index.cpp
+  # test_transfer_invlists.cpp
 )
 
 include(FetchContent)
@@ -28,11 +28,15 @@ set(BUILD_GMOCK CACHE BOOL OFF)
 set(INSTALL_GTEST CACHE BOOL OFF)
 FetchContent_MakeAvailable(googletest)
 
-find_package(OpenMP REQUIRED)
+find_package(OpenMP)
+if(TARGET OpenMP::OpenMP_CXX)
+  message(STATUS "Building with OpenMP")
+  # set(OPENMP_TARGET "OpenMP::OpenMP_CXX")
+  target_link_libraries(faiss_test PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 target_link_libraries(faiss_test PRIVATE
   faiss
-  OpenMP::OpenMP_CXX
   gtest_main
 )
 

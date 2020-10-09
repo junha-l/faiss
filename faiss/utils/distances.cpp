@@ -15,7 +15,7 @@
 #include <cstring>
 #include <cmath>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <faiss/impl/AuxIndexStructures.h>
 #include <faiss/impl/FaissAssert.h>
@@ -121,7 +121,7 @@ void exhaustive_inner_product_seq (
 {
     size_t check_period = InterruptCallback::get_period_hint (ny * d);
 
-    check_period *= omp_get_max_threads();
+    check_period *= GetMaxThreads();
 
     using SingleResultHandler = typename ResultHandler::SingleResultHandler;
 
@@ -160,7 +160,7 @@ void exhaustive_L2sqr_seq (
 {
 
     size_t check_period = InterruptCallback::get_period_hint (ny * d);
-    check_period *= omp_get_max_threads();
+    check_period *= GetMaxThreads();
     using SingleResultHandler = typename ResultHandler::SingleResultHandler;
 
     for (size_t i0 = 0; i0 < nx; i0 += check_period) {

@@ -13,7 +13,7 @@
 #include <unordered_set>
 #include <queue>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <faiss/Index.h>
 #include <faiss/impl/FaissAssert.h>

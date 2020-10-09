@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <algorithm>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <faiss/utils/utils.h>
 #include <faiss/impl/FaissAssert.h>
@@ -259,8 +259,8 @@ void IndexIVFScalarQuantizer::add_with_ids
     {
         std::vector<float> residual (d);
         std::vector<uint8_t> one_code (code_size);
-        int nt = omp_get_num_threads();
-        int rank = omp_get_thread_num();
+        int nt = GetNumThreads();
+        int rank = GetThreadNum();
 
         // each thread takes care of a subset of lists
         for (size_t i = 0; i < n; i++) {

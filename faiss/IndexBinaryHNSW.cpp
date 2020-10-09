@@ -16,7 +16,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cmath>
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <unordered_set>
 #include <queue>
@@ -122,7 +122,7 @@ void hnsw_add_vertices(IndexBinaryHNSW& index_hnsw,
         std::unique_ptr<DistanceComputer> dis(
           index_hnsw.get_distance_computer()
         );
-        int prev_display = verbose && omp_get_thread_num() == 0 ? 0 : -1;
+        int prev_display = verbose && GetThreadNum() == 0 ? 0 : -1;
 
 #pragma omp  for schedule(dynamic)
         for (int i = i0; i < i1; i++) {

@@ -11,7 +11,7 @@
 
 #include <cinttypes>
 #include <cstdio>
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <memory>
 
@@ -629,7 +629,7 @@ void IndexBinaryIVF::range_search(
     bool store_pairs = false;
     size_t nlistv = 0, ndis = 0;
 
-    std::vector<RangeSearchPartialResult *> all_pres (omp_get_max_threads());
+    std::vector<RangeSearchPartialResult *> all_pres (GetMaxThreads());
 
 #pragma omp parallel reduction(+: nlistv, ndis)
     {
@@ -638,7 +638,7 @@ void IndexBinaryIVF::range_search(
             (get_InvertedListScanner(store_pairs));
         FAISS_THROW_IF_NOT (scanner.get ());
 
-        all_pres[omp_get_thread_num()] = &pres;
+        all_pres[GetThreadNum()] = &pres;
 
         auto scan_list_func = [&](size_t i, size_t ik, RangeQueryResult &qres)
         {
