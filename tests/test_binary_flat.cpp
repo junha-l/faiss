@@ -7,13 +7,25 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 
 #include <gtest/gtest.h>
 
 #include <faiss/IndexBinaryFlat.h>
 #include <faiss/utils/hamming.h>
+#include <faiss/ParallelUtil.h>
+
+void func() {
+  std::cout << "GetMaxThreads: " << faiss::GetMaxThreads() << std::endl;
+  std::cout << "GetNumThreads: " << faiss::GetNumThreads() << std::endl;
+  std::cout << "GetThreadNum: " << faiss::GetThreadNum() << std::endl;
+  std::cout << "GetNested: " << faiss::GetNested() << std::endl;
+  std::cout << "InParallel: " << faiss::InParallel() << std::endl;
+}
 
 TEST(BinaryFlat, accuracy) {
+  func();
+
   // dimension of the vectors to index
   int d = 64;
 
@@ -59,4 +71,5 @@ TEST(BinaryFlat, accuracy) {
       EXPECT_EQ(dist_min, dis[k * i]);
     }
   }
+
 }

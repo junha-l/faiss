@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <random>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <unordered_map>
 #include <pthread.h>

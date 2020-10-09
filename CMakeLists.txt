@@ -20,6 +20,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 option(FAISS_OPT_LEVEL "" "generic")
 option(FAISS_ENABLE_GPU "Enable support for GPU indexes." ON)
 option(FAISS_ENABLE_PYTHON "Build Python extension." ON)
+option(FAISS_USE_SYSTEM_BLAS "Build system pre-installed BLAS." OFF)
 
 if(FAISS_ENABLE_GPU)
   set(CMAKE_CUDA_HOST_COMPILER ${CMAKE_CXX_COMPILER})
@@ -32,12 +33,12 @@ if(FAISS_ENABLE_GPU)
   add_subdirectory(faiss/gpu)
 endif()
 
-if(FAISS_ENABLE_PYTHON)
-  add_subdirectory(faiss/python)
-endif()
+# if(FAISS_ENABLE_PYTHON)
+#   add_subdirectory(faiss/python)
+# endif()
 
-add_subdirectory(demos)
-add_subdirectory(tutorial/cpp)
+# add_subdirectory(demos)
+# add_subdirectory(tutorial/cpp)
 
 if(BUILD_TESTING)
   # CTest must be included in the top level to enable `make test` target.

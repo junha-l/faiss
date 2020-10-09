@@ -15,7 +15,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cmath>
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <unordered_set>
 #include <queue>
@@ -195,7 +195,7 @@ void hnsw_add_vertices(IndexHNSW &index_hnsw,
                 DistanceComputer *dis =
                     storage_distance_computer (index_hnsw.storage);
                 ScopeDeleter1<DistanceComputer> del(dis);
-                int prev_display = verbose && omp_get_thread_num() == 0 ? 0 : -1;
+                int prev_display = verbose && GetThreadNum() == 0 ? 0 : -1;
                 size_t counter = 0;
 
 #pragma omp  for schedule(dynamic)

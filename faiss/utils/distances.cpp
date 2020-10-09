@@ -15,7 +15,7 @@
 #include <cstring>
 #include <cmath>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #include <faiss/impl/AuxIndexStructures.h>
 #include <faiss/impl/FaissAssert.h>
@@ -153,7 +153,7 @@ static void knn_inner_product_sse (const float * x,
     size_t k = res->k;
     size_t check_period = InterruptCallback::get_period_hint (ny * d);
 
-    check_period *= omp_get_max_threads();
+    check_period *= GetMaxThreads();
 
     for (size_t i0 = 0; i0 < nx; i0 += check_period) {
         size_t i1 = std::min(i0 + check_period, nx);
@@ -193,7 +193,7 @@ static void knn_L2sqr_sse (
     size_t k = res->k;
 
     size_t check_period = InterruptCallback::get_period_hint (ny * d);
-    check_period *= omp_get_max_threads();
+    check_period *= GetMaxThreads();
 
     for (size_t i0 = 0; i0 < nx; i0 += check_period) {
         size_t i1 = std::min(i0 + check_period, nx);

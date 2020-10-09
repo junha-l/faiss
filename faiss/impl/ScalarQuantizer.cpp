@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <algorithm>
 
-#include <omp.h>
+#include <faiss/ParallelUtil.h>
 
 #ifdef __SSE__
 #include <immintrin.h>

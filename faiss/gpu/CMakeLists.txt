@@ -5,9 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 
 target_sources(faiss PRIVATE
-  GpuAutoTune.cpp
-  GpuCloner.cpp
-  GpuClonerOptions.cpp
+  # GpuAutoTune.cpp
+  # GpuCloner.cpp
+  # GpuClonerOptions.cpp
   GpuDistance.cu
   GpuIndex.cu
   GpuIndexBinaryFlat.cu
@@ -92,9 +92,9 @@ target_sources(faiss PRIVATE
 )
 
 set(FAISS_GPU_HEADERS
-  GpuAutoTune.h
-  GpuCloner.h
-  GpuClonerOptions.h
+  # GpuAutoTune.h
+  # GpuCloner.h
+  # GpuClonerOptions.h
   GpuDistance.h
   GpuFaissAssert.h
   GpuIndexBinaryFlat.h

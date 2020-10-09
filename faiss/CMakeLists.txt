@@ -5,8 +5,8 @@
 # LICENSE file in the root directory of this source tree.
 
 add_library(faiss
-  AutoTune.cpp
-  Clustering.cpp
+  # AutoTune.cpp
+  # Clustering.cpp
   DirectMap.cpp
   IVFlib.cpp
   Index.cpp
@@ -14,11 +14,11 @@ add_library(faiss
   IndexBinary.cpp
   IndexBinaryFlat.cpp
   IndexBinaryFromFloat.cpp
-  IndexBinaryHNSW.cpp
+  # IndexBinaryHNSW.cpp
   IndexBinaryHash.cpp
   IndexBinaryIVF.cpp
   IndexFlat.cpp
-  IndexHNSW.cpp
+  # IndexHNSW.cpp
   IndexIVF.cpp
   IndexIVFFlat.cpp
   IndexIVFPQ.cpp
@@ -35,16 +35,16 @@ add_library(faiss
   MatrixStats.cpp
   MetaIndexes.cpp
   VectorTransform.cpp
-  clone_index.cpp
-  index_factory.cpp
+  # clone_index.cpp
+  # index_factory.cpp
   impl/AuxIndexStructures.cpp
   impl/FaissException.cpp
-  impl/HNSW.cpp
+  # impl/HNSW.cpp
   impl/PolysemousTraining.cpp
   impl/ProductQuantizer.cpp
   impl/ScalarQuantizer.cpp
-  impl/index_read.cpp
-  impl/index_write.cpp
+  # impl/index_read.cpp
+  # impl/index_write.cpp
   impl/io.cpp
   impl/lattice_Zn.cpp
   utils/Heap.cpp
@@ -58,8 +58,8 @@ add_library(faiss
 )
 
 set(FAISS_HEADERS
-  AutoTune.h
-  Clustering.h
+  # AutoTune.h
+  # Clustering.h
   DirectMap.h
   IVFlib.h
   Index.h
@@ -67,11 +67,11 @@ set(FAISS_HEADERS
   IndexBinary.h
   IndexBinaryFlat.h
   IndexBinaryFromFloat.h
-  IndexBinaryHNSW.h
+  # IndexBinaryHNSW.h
   IndexBinaryHash.h
   IndexBinaryIVF.h
   IndexFlat.h
-  IndexHNSW.h
+  # IndexHNSW.h
   IndexIVF.h
   IndexIVFFlat.h
   IndexIVFPQ.h
@@ -89,13 +89,14 @@ set(FAISS_HEADERS
   MetaIndexes.h
   MetricType.h
   VectorTransform.h
-  clone_index.h
-  index_factory.h
+  # clone_index.h
+  # index_factory.h
   index_io.h
+  ParallelUtil.h
   impl/AuxIndexStructures.h
   impl/FaissAssert.h
   impl/FaissException.h
-  impl/HNSW.h
+  # impl/HNSW.h
   impl/PolysemousTraining.h
   impl/ProductQuantizer-inl.h
   impl/ProductQuantizer.h
@@ -144,18 +145,34 @@ endif()
 
 target_compile_definitions(faiss PRIVATE FINTEGER=int)
 
-find_package(OpenMP REQUIRED)
-target_link_libraries(faiss PRIVATE OpenMP::OpenMP_CXX)
+# find_package(OpenMP REQUIRED)
+# target_link_libraries(faiss PRIVATE OpenMP::OpenMP_CXX)
+find_package(OpenMP)
+if(TARGET OpenMP::OpenMP_CXX)
+  message(STATUS "Building with OpenMP")
+  # set(OPENMP_TARGET "OpenMP::OpenMP_CXX")
+  target_link_libraries(faiss PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
-find_package(MKL)
-if(MKL_FOUND)
-  target_link_libraries(faiss PRIVATE ${MKL_LIBRARIES})
+if(FAISS_USE_SYSTEM_BLAS)
+  message(STATUS "Building faiss with pre-installed BLAS")
+  find_package(MKL)
+  if(MKL_FOUND)
+    target_link_libraries(faiss PRIVATE ${MKL_LIBRARIES})
+  else()
+    find_package(BLAS REQUIRED)
+    target_link_libraries(faiss PRIVATE ${BLAS_LIBRARIES})
+
+    find_package(LAPACK REQUIRED)
+    target_link_libraries(faiss PRIVATE ${LAPACK_LIBRARIES})
+  endif()
 else()
-  find_package(BLAS REQUIRED)
-  target_link_libraries(faiss PRIVATE ${BLAS_LIBRARIES})
-
-  find_package(LAPACK REQUIRED)
-  target_link_libraries(faiss PRIVATE ${LAPACK_LIBRARIES})
+  message(STATUS "Building faiss with BLAS from source")
+  if(TARGET ${FAISS_BLAS_TARGET})
+    target_link_libraries(faiss PRIVATE ${FAISS_BLAS_TARGET})
+  else()
+    message(ERROR "Invalid BLAS Target")
+  endif()
 endif()
 
 install(TARGETS faiss
