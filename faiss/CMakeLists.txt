@@ -7,7 +7,6 @@
 add_library(faiss
   # AutoTune.cpp
   Clustering.cpp
-  DirectMap.cpp
   IVFlib.cpp
   Index.cpp
   Index2Layer.cpp
@@ -71,7 +70,6 @@ add_library(faiss
 set(FAISS_HEADERS
   # AutoTune.h
   Clustering.h
-  DirectMap.h
   IVFlib.h
   Index.h
   Index2Layer.h
